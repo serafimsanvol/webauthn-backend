@@ -1,7 +1,7 @@
 import { randomUUID, randomBytes } from "node:crypto";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthTokens, AuthTokenType, Session } from "@prisma/client";
+import { AuthToken, AuthTokenType, Session } from "@prisma/client";
 
 const HOUR_IN_MS = 3600 * 1000; // 1 hour in milliseconds
 
@@ -12,7 +12,7 @@ export class AuthService {
   async generateVerificationToken(userId: string): Promise<string> {
     const token = randomUUID(); // Generate a unique token
 
-    await this.prisma.authTokens.create({
+    await this.prisma.authToken.create({
       data: {
         userId,
         token,
@@ -23,9 +23,9 @@ export class AuthService {
     return token;
   }
 
-  async verifyEmailToken(token: string): Promise<AuthTokens> {
+  async verifyEmailToken(token: string): Promise<AuthToken> {
     try {
-      const authToken = await this.prisma.authTokens.delete({
+      const authToken = await this.prisma.authToken.delete({
         where: {
           token,
           type: AuthTokenType.EMAIL_VERIFICATION,
