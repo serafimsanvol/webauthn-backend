@@ -3,22 +3,21 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthTokens, AuthTokenType, Session } from "@prisma/client";
 
+const HOUR_IN_MS = 3600 * 1000; // 1 hour in milliseconds
+
 @Injectable()
 export class AuthService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async generateVerificationToken(
-    userId: string,
-    // type: AuthTokenType,
-  ): Promise<string> {
+  async generateVerificationToken(userId: string): Promise<string> {
     const token = randomUUID(); // Generate a unique token
+
     await this.prisma.authTokens.create({
       data: {
         userId,
         token,
         type: AuthTokenType.EMAIL_VERIFICATION,
-        // isn't it too long?
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours expiration
+        expiresAt: new Date(Date.now() + HOUR_IN_MS), // 1 hour expiration
       },
     });
     return token;
@@ -49,7 +48,7 @@ export class AuthService {
       data: {
         userId,
         token,
-        expiresAt: new Date(Date.now() + 3600 * 1000), // 1 hour expiration
+        expiresAt: new Date(Date.now() + HOUR_IN_MS), // 1 hour expiration
       },
     });
   }
