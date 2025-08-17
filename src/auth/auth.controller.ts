@@ -39,10 +39,6 @@ export class AuthController {
     const sessionToken = await this.authService.generateSessionToken(userId);
 
     response.cookie("token", `${sessionToken.token}.${sessionToken.id}`, {
-      // todo work on expiring cookies
-      // maxAge: 1000 * 60 * 60 * 24, // 1 day
-      // expires
-      // expires
       httpOnly: true,
       secure: false,
       // lax for development, none with secure for production
