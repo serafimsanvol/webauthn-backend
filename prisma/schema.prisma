@@ -17,7 +17,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  authTokens AuthTokens[]
+  authTokens AuthToken[]
   sessions   Session[]
 }
 
@@ -27,7 +27,7 @@ enum AuthTokenType {
   EMAIL_VERIFICATION
 }
 
-model AuthTokens {
+model AuthToken {
   id        String        @id @default(cuid())
   userId    String
   token     String        @unique
